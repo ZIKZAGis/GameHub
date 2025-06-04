@@ -15,12 +15,18 @@ export const useGames = (query: string = '', page: number = 1, page_size = 21) =
     });
 
     useEffect(() => {
-        setState((prev) => ({...prev, loading: true}))
-        fetch(`/api/games?search=${query}&page=${page}&page_size=${page_size}`)
-            .then((res) => res.json())
-            .then((games) => setState({games, loading: false, error: null}))
-            .catch((err) => setState({games: [], loading: false, error: err.message}))
-    }, [query, page, page_size])
+        setState(prev => ({...prev, loading: true, error: null}));
+        
+        fetch(`/api/games?search=${encodeURIComponent(query)}&page=${page}&page_size=${page_size}`)
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then(games => setState({games, loading: false, error: null}))
+            .catch(err => setState({games: [], loading: false, error: err.message}));
+    }, [query, page, page_size]);
 
-    return state
+    return state;
 }
