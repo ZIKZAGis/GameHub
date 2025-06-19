@@ -3,7 +3,7 @@ export default function PopularGames () {
         <div className="bg-blue-100 w-full p-4">
             <h2 className="font-extrabold text-2xl mb-5">Популярные игры</h2>
 
-            <div className="flex gap-8">
+            <div className="grid grid-cols-[0.5fr_1fr] gap-8">
                 <div>
                     <ul>
                         <li>Название игры</li>
@@ -14,28 +14,28 @@ export default function PopularGames () {
                     </ul>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div className="border rounded-1g border-amber-800 p-4 h-50">
+                    <div className="border rounded-1g border-amber-800 p-4 h-70">
                         Обложка игры
                     </div>
-                    <div className="border rounded-1g border-amber-800 p-4 h-50">
+                    <div className="border rounded-1g border-amber-800 p-4 h-70">
                         Обложка игры
                     </div>
-                    <div className="border rounded-1g border-amber-800 p-4 h-50">
+                    <div className="border rounded-1g border-amber-800 p-4 h-70">
                         Обложка игры
                     </div>
-                    <div className="border rounded-1g border-amber-800 p-4 h-50">
+                    <div className="border rounded-1g border-amber-800 p-4 h-70">
                         Обложка игры
                     </div>
-                    <div className="border rounded-1g border-amber-800 p-4 h-50">
+                    <div className="border rounded-1g border-amber-800 p-4 h-70">
                         Обложка игры
                     </div>
-                    <div className="border rounded-1g border-amber-800 p-4 h-50">
+                    <div className="border rounded-1g border-amber-800 p-4 h-70">
                         Обложка игры
                     </div>
-                    <div className="border rounded-1g border-amber-800 p-4 h-50">
+                    <div className="border rounded-1g border-amber-800 p-4 h-70">
                         Обложка игры
                     </div>
-                    <div className="border rounded-1g border-amber-800 p-4 h-50">
+                    <div className="border rounded-1g border-amber-800 p-4 h-70">
                         Обложка игры
                     </div>
                 </div>
