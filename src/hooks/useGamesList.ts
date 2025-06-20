@@ -3,7 +3,7 @@
 import { Game } from "@/types/game";
 import { useEffect, useState } from "react";
 
-export const useGames = (query: string = '', page: number = 1, page_size = 21) => {
+export const useGamesList = (query: string = '', page: number = 1, page_size = 21) => {
     const [state, setState] = useState<{
         games: Game[],
         loading: boolean,

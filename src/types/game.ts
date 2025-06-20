@@ -5,15 +5,17 @@ export interface Game {
   genres: { name: string }[];
   rating: number;
   dominant_color: string;
-  parent_platforms: Platform[];
+  platforms: Platform[];
   released: string;
   short_screenshots: ShortScreenshots[]
 }
 
 export interface Platform {
-  id: number;
-  name: string;
-  slug: string;
+  platform: {
+    id: number;
+    name: string;
+    slug: string;
+  }
 }
 
 export interface ShortScreenshots {

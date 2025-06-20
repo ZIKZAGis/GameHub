@@ -1,13 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useGames } from "@/hooks/useGames";
+import { useGamesList } from "@/hooks/useGamesList";
 import GamesListSkeleton from "./GamesListSkeleton"
 import { useState } from "react";
 
 export default function GameList() {
     const [page, setPage] = useState(1)
-    const {games, loading, error} = useGames('', page)
+    const {games, loading, error} = useGamesList('', page)
 
     if (loading) return <GamesListSkeleton/>
 
