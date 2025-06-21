@@ -22,3 +22,12 @@ export interface ShortScreenshots {
   id: number;
   image: string;
 }
+
+// games
+// gameList => [Game]
+
+export interface IGetGames {
+  games: Game[],
+  loading: boolean,
+  error: string | null
+}

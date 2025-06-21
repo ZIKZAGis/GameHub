@@ -9,6 +9,7 @@ export default function GameList() {
     const [page, setPage] = useState(1)
     const {games, loading, error} = useGamesList('', page)
 
+    // use suspense
     if (loading) return <GamesListSkeleton/>
 
     if (error) return <div>{error}</div>

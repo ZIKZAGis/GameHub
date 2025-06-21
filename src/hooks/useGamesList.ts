@@ -15,8 +15,8 @@ export const useGamesList = (query: string = '', page: number = 1, page_size = 2
     });
 
     useEffect(() => {
-        setState(prev => ({...prev, loading: true, error: null}));
-        
+        setState(prev => ({ ...prev, loading: true, error: null }));
+
         fetch(`/api/games?search=${encodeURIComponent(query)}&page=${page}&page_size=${page_size}`)
             .then(res => {
                 if (!res.ok) {
@@ -24,8 +24,8 @@ export const useGamesList = (query: string = '', page: number = 1, page_size = 2
                 }
                 return res.json();
             })
-            .then(games => setState({games, loading: false, error: null}))
-            .catch(err => setState({games: [], loading: false, error: err.message}));
+            .then(games => setState({ games, loading: false, error: null }))
+            .catch(err => setState({ games: [], loading: false, error: err.message }));
     }, [query, page, page_size]);
 
     return state;

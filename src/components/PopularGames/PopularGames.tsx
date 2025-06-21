@@ -1,23 +1,25 @@
 "use client";
 
 import Image from "next/image";
-import { usePopularGames } from "@/hooks/usePopularGames"
 import { useEffect, useState } from "react";
 import { Game } from "@/types/game";
+import { usePopularGames } from "@/hooks/usePopularGames";
 
-export default function PopularGames () {
-    const {games, loading, error} = usePopularGames('', 8)
+export default function PopularGames() {
+    const { games, loading, error } = usePopularGames('', 8)
     const [selectedGame, setSelectedGame] = useState<Game | null>(null)
     
+
     useEffect(() => {
         if (games.length > 0) {
             setSelectedGame(games[0])
         }
     }, [games])
 
+    // использовать Suspence
     if (loading) return <div>Загрузка...</div>
     if (error) return <div>{error}</div>
-    
+
     return (
         <div className="bg-blue-100 w-full p-4">
             <h2 className="font-extrabold text-2xl mb-5">Популярные игры</h2>
@@ -37,14 +39,14 @@ export default function PopularGames () {
                 <div className="grid grid-cols-4 gap-2">
                     {games.map((game) => (
                         <div key={game.id} className="border rounded-1g overflow-hidden h-[250px]">
-                            <Image 
+                            <Image
                                 src={game.background_image}
-                                alt={game.name} 
+                                alt={game.name}
                                 width={1000}
                                 height={1000}
                                 className="w-full h-full object-cover object-center"
                                 priority={true}
-                                onError={(e) => {e.currentTarget.src = '@/default-game-image.jpg'}}
+                                onError={(e) => { e.currentTarget.src = '@/default-game-image.jpg' }}
                             />
                         </div>
                     ))}
@@ -53,4 +55,22 @@ export default function PopularGames () {
         </div>
 
     )
+}
+
+
+
+import { Suspense } from "react";
+
+export default function CustomSuspence({loading, error, children}) {
+  return (
+    <Suspense fallback={
+   <>
+   {loading && <Sceleton/>}
+   {error && 'error'}
+   </> 
+    
+    }>
+      {children}
+    </Suspense>
+  );
 }
