@@ -31,3 +31,5 @@ export interface IGetGames {
   loading: boolean,
   error: string | null
 }
+
+//copmment
