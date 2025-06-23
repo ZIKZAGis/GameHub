@@ -3,17 +3,10 @@ import { getLastThreeMonthsRange } from "./helpers/getLastThreeMonthsRange";
 
 const apiKey = process.env.RAWG_API_KEY;
 
-
-// service => /helpers/ transform... get... 
-// 
-
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
-
     const { startDate, endDate } = getLastThreeMonthsRange();
-
     const dates = `${startDate},${endDate}`
-
     const page_size = searchParams.get('page_size') || '8';
 
     try {

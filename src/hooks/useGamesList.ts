@@ -1,14 +1,11 @@
 "use client";
 
-import { Game } from "@/types/game";
+import { fetchData } from "@/lib/typedFetch";
+import { Game, IGetGameList } from "@/types/game";
 import { useEffect, useState } from "react";
 
 export const useGamesList = (query: string = '', page: number = 1, page_size = 21) => {
-    const [state, setState] = useState<{
-        games: Game[],
-        loading: boolean,
-        error: string | null
-    }>({
+    const [state, setState] = useState<IGetGameList>({
         games: [],
         loading: false,
         error: null
@@ -17,15 +14,10 @@ export const useGamesList = (query: string = '', page: number = 1, page_size = 2
     useEffect(() => {
         setState(prev => ({ ...prev, loading: true, error: null }));
 
-        fetch(`/api/games?search=${encodeURIComponent(query)}&page=${page}&page_size=${page_size}`)
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error(`HTTP error! status: ${res.status}`);
-                }
-                return res.json();
-            })
-            .then(games => setState({ games, loading: false, error: null }))
-            .catch(err => setState({ games: [], loading: false, error: err.message }));
+        fetchData<Game[]>(`/api/games?search=${encodeURIComponent(query)}&page=${page}&page_size=${page_size}`)
+            .then(games => setState({games, loading: false, error: null}))
+            .catch(err => setState({games: [], loading: false, error: err.message}))
+            
     }, [query, page, page_size]);
 
     return state;

@@ -23,10 +23,7 @@ export interface ShortScreenshots {
   image: string;
 }
 
-// games
-// gameList => [Game]
-
-export interface IGetGames {
+export interface IGetGameList {
   games: Game[],
   loading: boolean,
   error: string | null

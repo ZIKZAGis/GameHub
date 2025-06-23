@@ -1,13 +1,11 @@
 "use client";
 
 import { fetchData } from "@/lib/typedFetch";
-import { Game, IGetGames } from "@/types/game";
+import { Game, IGetGameList } from "@/types/game";
 import { useEffect, useState } from "react";
 
-// pageSize
-
 export const usePopularGames = (query: string = '', page_size = 8) => {
-    const [state, setState] = useState<IGetGames>({
+    const [state, setState] = useState<IGetGameList>({
         games: [],
         loading: false,
         error: null
