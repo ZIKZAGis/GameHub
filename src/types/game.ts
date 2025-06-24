@@ -1,4 +1,4 @@
-export interface Game {
+export interface IGamePreview {
   id: number;
   name: string;
   background_image: string;
@@ -8,6 +8,16 @@ export interface Game {
   platforms: Platform[];
   released: string;
   short_screenshots: ShortScreenshots[]
+}
+
+// export interface IGame extends IGamePreview {
+//   description: string
+// }
+
+export interface IGetGame {
+  game: IGamePreview | null,
+  loading: boolean,
+  error: string | null
 }
 
 export interface Platform {
@@ -24,7 +34,7 @@ export interface ShortScreenshots {
 }
 
 export interface IGetGameList {
-  games: Game[],
+  games: IGamePreview[],
   loading: boolean,
   error: string | null
 }
