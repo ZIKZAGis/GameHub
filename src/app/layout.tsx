@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col bg-linear-to-r from-[#0C000D] via-[#230340] to-[#1E0133] text-white`}
       >
         <Header/>
         <main className="flex-grow justify-items-center w-full max-w-7xl font-[family-name:var(--font-geist-sans)] px-4 py-10 m-auto">

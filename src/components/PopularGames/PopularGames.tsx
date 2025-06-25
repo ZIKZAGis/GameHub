@@ -27,8 +27,8 @@ export default function PopularGames() {
             error={error || gameError} 
             skeleton={<div>Загрузка...</div>}
         >
-            <div className="bg-blue-100 w-full p-4">
-                <h2 className="font-extrabold text-2xl mb-5">Популярные игры</h2>
+            <div className="w-full p-4">
+                <h2 className="font-extrabold text-2xl mb-5 text-[#60258A]">Популярные игры</h2>
 
                 <div className="grid grid-cols-[0.4fr_1fr] gap-6">
 
@@ -36,20 +36,25 @@ export default function PopularGames() {
                         {selectedGame && (
                             <ul className="text-center">
                                 <li className="font-bold text-xl mb-2">{selectedGame.name}</li>
-                                <li className="text-gray-600 mb-3">краткое описание</li>
+                                <li className="text-gray-500 mb-3">
+                                    {selectedGame.description_raw.length > 400
+                                        ? `${selectedGame.description_raw.substring(0, 400)}...`
+                                        : selectedGame.description_raw    
+                                    }
+                                </li>
                                 <li className="mb-2">
                                     {`Рейтинг: ${selectedGame.rating} | Дата выхода: ${selectedGame.released} | Жанр: ${selectedGame.genres[0]?.name}`}
                                 </li>
                                 <li className="mb-4">
-                                    Платформы: {selectedGame.platforms?.map((pl) => pl.platform.name).join("/ ")}
+                                    Платформы: {selectedGame.platforms?.map((pl) => pl.platform.name).join(" | ")}
                                 </li>
                                 <li>
-                                    <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer mb-3">
+                                    <button className="bg-[#ff5338] text-white px-4 py-2 rounded-xl transition-all ease-linear hover:bg-[#ED2809] cursor-pointer mb-3">
                                         Подробнее
                                     </button>
                                 </li>
                                 <li>
-                                    <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 cursor-pointer">
+                                    <button className="bg-[#ff5338] text-white px-4 py-2 rounded-xl transition-all ease-linear hover:bg-[#ED2809] cursor-pointer">
                                         Добавить в избранное
                                     </button>
                                 </li>
@@ -57,11 +62,20 @@ export default function PopularGames() {
                         )}
                     </div>
 
-                    <div className="grid grid-cols-4 gap-2">
+                    <div className="grid grid-cols-4 gap-4">
                         {games.map((game) => (
                             <div 
                                 key={game.id} 
-                                className={`relative border rounded-1g overflow-hidden h-[250px] cursor-pointer transition-all ${selectedGameId === game.id ? 'ring-2 ring-blue-500 scale-105' : 'hover:scale-102'}`}
+                                className={`
+                                    relative 
+                                    rounded-xl 
+                                    overflow-hidden 
+                                    h-[250px] 
+                                    cursor-pointer 
+                                    transition-all 
+                                    ${selectedGameId === game.id ? 'ring-2 ring-[#ff5338] scale-103' : 'hover:scale-102'}
+                                    bg-[#10011F]
+                                `}
                                 onClick={() => handleGameClick(game.id)}
                             >
                                 <Image
@@ -69,7 +83,7 @@ export default function PopularGames() {
                                     alt={game.name}
                                     width={1000}
                                     height={1000}
-                                    className="w-full h-full object-cover object-center"
+                                    className="w-full h-full object-contain object-center"
                                     priority={true}
                                     onError={(e) => { 
                                         e.currentTarget.src = '/default-game-image.jpg'

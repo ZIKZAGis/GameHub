@@ -1,7 +1,7 @@
 "use client";
 
 import { fetchData } from "@/lib/typedFetch";
-import { IGamePreview, IGetGame } from "@/types/game";
+import { IGame, IGetGame } from "@/types/game";
 import { useEffect, useState } from "react";
 
 export const useGame = (gameId: number | null) => {
@@ -19,7 +19,7 @@ export const useGame = (gameId: number | null) => {
         
         setState(prev => ({ ...prev, loading: true, error: null }));
 
-        fetchData<IGamePreview>(`/api/game/${gameId}`)
+        fetchData<IGame>(`/api/game/${gameId}`)
             .then(game => setState({game, loading: false, error: null}))
             .catch(err => setState({game: null, loading: false, error: err.message}))
             
