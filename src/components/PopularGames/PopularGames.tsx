@@ -5,11 +5,13 @@ import { useEffect, useState } from "react";
 import { usePopularGames } from "@/hooks/usePopularGames";
 import CustomSuspense from "@/app/ui/CustomSuspense/CustomSuspense";
 import { useGame } from "@/hooks/useGame";
+import { useRouter } from "next/navigation";
 
 export default function PopularGames() {
     const { games, loading, error } = usePopularGames('', 8)
     const [selectedGameId, setSelectedGameId] = useState<number | null>(null)
     const {game: selectedGame, loading: gameLoading, error: gameError} = useGame(selectedGameId)
+    const router = useRouter()
 
     useEffect(() => {
         if (games.length > 0 && selectedGameId === null) {
@@ -19,6 +21,10 @@ export default function PopularGames() {
 
     const handleGameClick = (gameId: number) => {
         setSelectedGameId(gameId)
+    }
+
+    const handleGameDetails = (gameId: number) => {
+        router.push(`/game/${gameId}`)
     }
 
     return (
@@ -49,7 +55,10 @@ export default function PopularGames() {
                                     Платформы: {selectedGame.platforms?.map((pl) => pl.platform.name).join(" | ")}
                                 </li>
                                 <li>
-                                    <button className="bg-[#ff5338] text-white px-4 py-2 rounded-xl transition-all ease-linear hover:bg-[#ED2809] cursor-pointer mb-3">
+                                    <button 
+                                        className="bg-[#ff5338] text-white px-4 py-2 rounded-xl transition-all ease-linear hover:bg-[#ED2809] cursor-pointer mb-3" 
+                                        onClick={() => handleGameDetails(selectedGameId ? selectedGameId : 0)}
+                                    >
                                         Подробнее
                                     </button>
                                 </li>
