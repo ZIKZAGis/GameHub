@@ -1,14 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { useGamesList } from "@/hooks/useGamesList";
+import { useGameList } from "@/hooks/useGameList";
 import GamesListSkeleton from "./GamesListSkeleton"
 import { useState } from "react";
 import CustomSuspense from "@/app/ui/CustomSuspense/CustomSuspense";
 
 export default function GameList() {
     const [page, setPage] = useState(1)
-    const {games, loading, error} = useGamesList('', page)
+    const {games, loading, error} = useGameList('', page)
 
     return (
         <CustomSuspense loading={loading} error={error} skeleton={<GamesListSkeleton/>}>

@@ -2,8 +2,8 @@ import Link from "next/link";
 
 export default function Header () {
     return (
-        <div className="w-full bg-blue-400">
-            <div className="flex justify-between w-full max-w-7xl items-center justify-items-center m-auto p-4">
+        <div className="w-full">
+            <div className="flex justify-between w-full max-w-7xl items-center justify-items-center m-auto p-4 border-b-2 border-b-[#ff5338]">
                 <Link href="/">
                     Лого
                 </Link>

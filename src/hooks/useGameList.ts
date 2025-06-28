@@ -1,10 +1,10 @@
 "use client";
 
 import { fetchData } from "@/lib/typedFetch";
-import { Game, IGetGameList } from "@/types/game";
+import { IGamePreview, IGetGameList } from "@/types/game";
 import { useEffect, useState } from "react";
 
-export const useGamesList = (query: string = '', page: number = 1, page_size = 21) => {
+export const useGameList = (query: string = '', page: number = 1, page_size = 21) => {
     const [state, setState] = useState<IGetGameList>({
         games: [],
         loading: false,
@@ -14,7 +14,7 @@ export const useGamesList = (query: string = '', page: number = 1, page_size = 2
     useEffect(() => {
         setState(prev => ({ ...prev, loading: true, error: null }));
 
-        fetchData<Game[]>(`/api/games?search=${encodeURIComponent(query)}&page=${page}&page_size=${page_size}`)
+        fetchData<IGamePreview[]>(`/api/game_list?search=${encodeURIComponent(query)}&page=${page}&page_size=${page_size}`)
             .then(games => setState({games, loading: false, error: null}))
             .catch(err => setState({games: [], loading: false, error: err.message}))
             

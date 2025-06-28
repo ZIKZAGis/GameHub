@@ -1,4 +1,3 @@
-
 export function getLastThreeMonthsRange(): { startDate: string; endDate: string } {
     const now = new Date();
     const endDate = new Date(now);
