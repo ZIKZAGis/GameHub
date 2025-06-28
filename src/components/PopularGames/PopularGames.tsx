@@ -5,11 +5,14 @@ import { useEffect, useState } from "react";
 import { usePopularGames } from "@/hooks/usePopularGames";
 import CustomSuspense from "@/app/ui/CustomSuspense/CustomSuspense";
 import { useGame } from "@/hooks/useGame";
+import { useNavigation } from "@/lib/navigation";
+import defaultGameImage from '@/app/assets/images/default-game-image.jpg';
 
 export default function PopularGames() {
     const { games, loading, error } = usePopularGames('', 8)
     const [selectedGameId, setSelectedGameId] = useState<number | null>(null)
     const {game: selectedGame, loading: gameLoading, error: gameError} = useGame(selectedGameId)
+    const {navigateToGameDetails} = useNavigation()
 
     useEffect(() => {
         if (games.length > 0 && selectedGameId === null) {
@@ -49,7 +52,10 @@ export default function PopularGames() {
                                     Платформы: {selectedGame.platforms?.map((pl) => pl.platform.name).join(" | ")}
                                 </li>
                                 <li>
-                                    <button className="bg-[#ff5338] text-white px-4 py-2 rounded-xl transition-all ease-linear hover:bg-[#ED2809] cursor-pointer mb-3">
+                                    <button 
+                                        className="bg-[#ff5338] text-white px-4 py-2 rounded-xl transition-all ease-linear hover:bg-[#ED2809] cursor-pointer mb-3" 
+                                        onClick={() => navigateToGameDetails(selectedGameId ?? 0)}
+                                    >
                                         Подробнее
                                     </button>
                                 </li>
@@ -86,7 +92,7 @@ export default function PopularGames() {
                                     className="w-full h-full object-contain object-center"
                                     priority={true}
                                     onError={(e) => { 
-                                        e.currentTarget.src = '/default-game-image.jpg'
+                                        e.currentTarget.src = defaultGameImage.src
                                         e.currentTarget.onerror = null
                                     }}
                                 />
