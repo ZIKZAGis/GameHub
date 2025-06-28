@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 
+const apiKey = process.env.RAWG_API_KEY;
+
 export async function GET(req: Request) {
-    const apiKey = process.env.RAWG_API_KEY;
     const { searchParams } = new URL(req.url);
     
     const search = searchParams.get('search') || '';
