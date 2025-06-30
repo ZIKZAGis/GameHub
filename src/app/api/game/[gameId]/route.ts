@@ -1,14 +1,13 @@
 import { NextResponse } from "next/server";
+import type { NextRequest } from 'next/server'
 
 const apiKey = process.env.RAWG_API_KEY;
 
 export async function GET(
-    request: Request, 
-    {params}: {params: {gameId: string}}
+    request: NextRequest,
+    {params}: {params: Promise<{gameId: string}>}
 ) {
-    await new Promise(resolve => setTimeout(resolve, 0));
-    
-    const {gameId} = await params
+    const gameId = (await params).gameId
 
     if (!apiKey) {
         return NextResponse.json(
