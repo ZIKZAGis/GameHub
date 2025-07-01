@@ -1,4 +1,5 @@
 import Link from "next/link";
+import GameSearchInput from "../GameSearchInput/GameSearchInput";
 
 export default function Header () {
     return (
@@ -7,7 +8,8 @@ export default function Header () {
                 <Link href="/">
                     Лого
                 </Link>
-                <input type="text" className="border-2 border-gray-700 px-2 py-1" placeholder="Поиск..."/>
+                {/* <input type="text" className="border-2 border-gray-700 px-2 py-1" placeholder="Поиск..."/> */}
+                <GameSearchInput/>
                 <Link href="/games_list">
                     Список игр
                 </Link>
