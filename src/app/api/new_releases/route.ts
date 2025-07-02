@@ -5,12 +5,12 @@ const apiKey = process.env.RAWG_API_KEY;
 
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
-    const { startDate, endDate } = getMonthsRange('past', 3);
+    const { startDate, endDate } = getMonthsRange('past', 1);
     const dates = `${startDate},${endDate}`
-    const page_size = searchParams.get('page_size') || '8';
+    const page_size = searchParams.get('page_size') || '12';
 
     try {
-        const response = await fetch(`https://api.rawg.io/api/games?key=${apiKey}&dates=${dates}&ordering=-reviews_count&page_size=${page_size}`);
+        const response = await fetch(`https://api.rawg.io/api/games?key=${apiKey}&dates=${dates}&ordering=-released-rating&page_size=${page_size}`);
         const data = await response.json();
         return NextResponse.json(data.results);
     } catch (err) {
