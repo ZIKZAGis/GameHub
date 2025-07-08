@@ -1,15 +1,39 @@
+import { Suspense, Component, ReactNode } from "react";
 import { ICustomSuspense } from "@/types/suspense";
-import { Suspense } from "react";
 
-export default function CustomSuspense({loading, error, skeleton, children} : ICustomSuspense) {
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error?: Error;
+}
+
+class SuspenseErrorBoundary extends Component<
+  { children: ReactNode; errorFallback?: ReactNode },
+  ErrorBoundaryState
+> {
+  constructor(props: { children: ReactNode; errorFallback?: ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.errorFallback || <div>Что-то пошло не по плану</div>;
+    }
+
+    return this.props.children;
+  }
+}
+
+export default function CustomSuspense({ fallback, children, errorFallback }: ICustomSuspense) {
   return (
-    <Suspense fallback={
-      <>
-        {loading && skeleton}
-        {error && 'error'}
-      </> 
-    }>
-      {children}
-    </Suspense>
+    <SuspenseErrorBoundary errorFallback={errorFallback}>
+      <Suspense fallback={fallback}>
+        {children}
+      </Suspense>
+    </SuspenseErrorBoundary>
   );
 }
