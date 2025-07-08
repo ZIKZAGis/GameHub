@@ -1,3 +1,5 @@
+"use client";
+
 import { Suspense, Component, ReactNode } from "react";
 import { ICustomSuspense } from "@/types/suspense";
 
