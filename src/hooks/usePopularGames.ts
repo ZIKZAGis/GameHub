@@ -1,24 +1,31 @@
 "use client";
 
 import { fetchData } from "@/lib/typedFetch";
-import { IGamePreview, IGetGameList } from "@/types/game";
-import { useEffect, useState } from "react";
+import { IGamePreview } from "@/types/game";
+import { use, useEffect, useRef } from "react";
+
+const promiseCache = new Map<string, Promise<IGamePreview[]>>();
 
 export const usePopularGames = (query: string = '', page_size = 8) => {
-    const [state, setState] = useState<IGetGameList>({
-        games: [],
-        loading: false,
-        error: null
-    });
+    const cacheKey = `popular-games-${query}-${page_size}`;
+    const promiseRef = useRef<Promise<IGamePreview[]> | null>(null);
+
+    if (!promiseCache.has(cacheKey)) {
+        const promise = fetchData<IGamePreview[]>(`/api/popular_games?page_size=${page_size}`);
+        promiseCache.set(cacheKey, promise);
+        promiseRef.current = promise;
+    }
+
+    const cachedPromise = promiseCache.get(cacheKey)!;
+    const games = use(cachedPromise);
 
     useEffect(() => {
-        setState(prev => ({ ...prev, loading: true, error: null }));
+        return () => {
+            if (promiseRef.current) {
+                promiseCache.delete(cacheKey);
+            }
+        };
+    }, [cacheKey]);
 
-        fetchData<IGamePreview[]>(`/api/popular_games?page_size=${page_size}`)
-            .then(games => setState({ games, loading: false, error: null }))
-            .catch(err => setState({ games: [], loading: false, error: err.message }));
-
-    }, [query, page_size]);
-
-    return state;
+    return { games };
 }
