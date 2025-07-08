@@ -13,10 +13,10 @@ export const useNewReleases = (query: string = '', page_size = 12) => {
     if (!promiseCache.has(cacheKey)) {
         const promise = fetchData<IGamePreview[]>(`/api/new_releases?page_size=${page_size}`);
         promiseCache.set(cacheKey, promise);
-        promiseRef.current = promise;
     }
 
     const cachedPromise = promiseCache.get(cacheKey)!;
+    promiseRef.current = cachedPromise;
     const games = use(cachedPromise);
 
     useEffect(() => {

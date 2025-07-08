@@ -1,5 +1,5 @@
 export async function fetchData<T>(url: string): Promise<T> {
-  return await fetch(url).then((res: Response) => {
+  return fetch(url).then((res: Response) => {
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }

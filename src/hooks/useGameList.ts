@@ -17,9 +17,9 @@ export const useGameList = (query: string = '', page: number = 1, page_size = 21
     
     useEffect(() => {
         return () => {
-            gameListCache.clear();
+            gameListCache.delete(cacheKey);
         };
-    }, []);
+    }, [cacheKey]);
     
     if (!gameListCache.has(cacheKey)) {
         const promise = fetchData<IGamePreview[]>(
