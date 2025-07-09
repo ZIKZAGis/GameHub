@@ -7,11 +7,12 @@ import { useNavigation } from "@/lib/navigation";
 export default function GameSearchInput() {
   const [searchQuery, setSearchQuery] = useState('')
   const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const searchRef = useRef<HTMLDivElement>(null)
-  const {games, loading, error} = useGameList(searchQuery, 1, 5)
-  const {navigateToGameDetails} = useNavigation()
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const { games } = useGameList(debouncedQuery, 1, 5);
+  const { navigateToGameDetails } = useNavigation();
 
+  // TODO refactor into custom hook
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedQuery(searchQuery);
@@ -60,20 +61,17 @@ export default function GameSearchInput() {
 
       {isDropdownOpen && (
         <div className="absolute z-10 w-full mt-1 bg-[#60258A] overflow-hidden rounded-md shadow-lg">
-          {loading ? (
-            <div className="px-4 py-2 text-gray-500">Loading...</div>
-          ) : error ? (
-            <div className="px-4 py-2 text-red-500">{error}</div>
-          ) : games.length > 0 ? (
+          {games.length > 0 ? (
             <ul>
               {games.map((game) => (
                 <li
                   key={game.id}
                   className="px-4 py-2 hover:bg-[#ff5338] cursor-pointer transition-all ease-in"
                   onClick={() => {
-                    setSearchQuery('')
-                    setDebouncedQuery(game.name);
-                    navigateToGameDetails(game.id)
+                    setSearchQuery("");
+                    setDebouncedQuery("");
+                    setIsDropdownOpen(false);
+                    navigateToGameDetails(game.id);
                   }}
                 >{game.name}</li>
               ))}

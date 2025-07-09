@@ -1,29 +1,35 @@
 "use client";
 
 import { fetchData } from "@/lib/typedFetch";
-import { IGame, IGetGame } from "@/types/game";
-import { useEffect, useState } from "react";
+import { IGame } from "@/types/game";
+import { use, useEffect, useRef } from "react";
+
+const promiseCache = new Map<string, Promise<IGame>>();
 
 export const useGame = (gameId: number | null) => {
-    const [state, setState] = useState<IGetGame>({
-        game: null,
-        loading: false,
-        error: null
-    });
+    const promiseRef = useRef<Promise<IGame> | null>(null);
+    const cacheKey = gameId ? `game-${gameId}` : null;
 
     useEffect(() => {
-        if (!gameId) {
-            setState({game: null, loading: false, error: null})
-            return;
-        }
-        
-        setState(prev => ({ ...prev, loading: true, error: null }));
+        return () => {
+            if (promiseRef.current && cacheKey) {
+                promiseCache.delete(cacheKey);
+            }
+        };
+    }, [cacheKey]);
 
-        fetchData<IGame>(`/api/game/${gameId}`)
-            .then(game => setState({game, loading: false, error: null}))
-            .catch(err => setState({game: null, loading: false, error: err.message}))
-            
-    }, [gameId]);
+    if (!gameId) {
+        return { game: null };
+    }
 
-    return state;
+    if (!promiseCache.has(cacheKey!)) {
+        const promise = fetchData<IGame>(`/api/game/${gameId}`);
+        promiseCache.set(cacheKey!, promise);
+        promiseRef.current = promise;
+    }
+
+    const cachedPromise = promiseCache.get(cacheKey!)!;
+    const game = use(cachedPromise);
+
+    return { game };
 }
