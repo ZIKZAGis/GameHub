@@ -3,46 +3,22 @@
 import { useGameList } from "@/hooks/useGameList"
 import { useState, useRef, useEffect } from "react"
 import { useNavigation } from "@/lib/navigation";
+import useDebounce from "@/hooks/useDebounce";
+import { useClickOutside } from "@/hooks/useClickOutside";
 
 export default function GameSearchInput() {
   const [searchQuery, setSearchQuery] = useState('')
-  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const debouncedQuery = useDebounce(searchQuery, 300)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const { games } = useGameList(debouncedQuery, 1, 5);
   const { navigateToGameDetails } = useNavigation();
 
-  // TODO refactor into custom hook
   useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedQuery(searchQuery);
-    }, 100);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [searchQuery]);
-
-  useEffect(() => {
-    if (debouncedQuery.length > 0) {
-      setIsDropdownOpen(true);
-    } else {
-      setIsDropdownOpen(false);
-    }
+    setIsDropdownOpen(debouncedQuery.length > 0)
   }, [debouncedQuery]);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [])
+  useClickOutside(searchRef, () => setIsDropdownOpen(false));
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -69,7 +45,6 @@ export default function GameSearchInput() {
                   className="px-4 py-2 hover:bg-[#ff5338] cursor-pointer transition-all ease-in"
                   onClick={() => {
                     setSearchQuery("");
-                    setDebouncedQuery("");
                     setIsDropdownOpen(false);
                     navigateToGameDetails(game.id);
                   }}
