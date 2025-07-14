@@ -1,20 +1,30 @@
+"use client"
+
+import { useNavigation } from '@/lib/navigation';
 import React from 'react'
+import GameCard from '../GameCard/GameCard';
+import { useComingSoon } from '@/hooks/useComingSoon';
 
 export default function ComingSoon() {
-  return (
-    <div className='bg-blue-400 w-full p-4'>
-      <h2 className='font-extrabold text-2xl mb-5'>
-        Скоро выйдут
-      </h2>
+  const { games } = useComingSoon("", 12);
+  const { navigateToGameDetails } = useNavigation();
 
-      <ul className='flex justify-between'>
-        <li className='h-50 border p-2 border-red-500'>Карточка игры</li>
-        <li className='h-50 border p-2 border-red-500'>Карточка игры</li>
-        <li className='h-50 border p-2 border-red-500'>Карточка игры</li>
-        <li className='h-50 border p-2 border-red-500'>Карточка игры</li>
-        <li className='h-50 border p-2 border-red-500'>Карточка игры</li>
-        <li className='h-50 border p-2 border-red-500'>Карточка игры</li>
-      </ul>
+  return (
+    <div className="w-full p-4">
+      <h2 className="font-extrabold text-2xl mb-5 text-[#60258A]">
+        Coming Soon
+      </h2>
+      <div className="grid grid-cols-4 gap-4">
+        {games.map((game) => (
+          <GameCard
+            key={game.id}
+            name={game.name}
+            released={game.released}
+            background_image={game.background_image}
+            onClick={() => navigateToGameDetails(game.id)}
+          />
+        ))}
+      </div>
     </div>
   )
 }
