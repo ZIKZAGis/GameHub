@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {HTMLAttributes} from 'react'
 import Image from "next/image";
 import { IPlatform, NamedEntity } from '@/types/game'
 
@@ -10,7 +10,7 @@ type GameCardProps = {
     rating?: number, 
     genres?: NamedEntity[],
     onClick: () => void
-}
+} & HTMLAttributes<HTMLDivElement>
 
 export default function GameCard({
     name, 
@@ -19,12 +19,14 @@ export default function GameCard({
     background_image, 
     rating, 
     genres,
-    onClick
+    onClick,
+    ...props
 }: GameCardProps) {
   return (
     <div 
         className='relative rounded-lg overflow-hidden hover:scale-102 transition-all ease-in w-full h-48 cursor-pointer'
         onClick={onClick}
+        {...props}
     >
         <Image
             src={background_image}
