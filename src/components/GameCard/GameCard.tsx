@@ -1,6 +1,7 @@
 import React, {HTMLAttributes} from 'react'
 import Image from "next/image";
 import { IPlatform, NamedEntity } from '@/types/game'
+import defaultGameImage from "@/app/assets/images/default-game-image.jpg";
 
 type GameCardProps = {
     name: string, 
@@ -29,7 +30,7 @@ export default function GameCard({
         {...props}
     >
         <Image
-            src={background_image}
+            src={background_image ? background_image : defaultGameImage}
             alt={name}
             fill
             className='object-cover'

@@ -1,31 +1,41 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { fetchData } from "@/lib/typedFetch";
 import { IGamePreview } from "@/types/game";
-import { use, useEffect, useRef } from "react";
 
-const promiseCache = new Map<string, Promise<IGamePreview[]>>();
+const cache = new Map<string, IGamePreview[]>();
 
-export const usePopularGames = (query: string = '', page_size = 8) => {
-    const cacheKey = `popular-games-${query}-${page_size}`;
-    const promiseRef = useRef<Promise<IGamePreview[]> | null>(null);
+export const usePopularGames = (query: string = '', pageSize = 8) => {
+  const [games, setGames] = useState<IGamePreview[]>([]);
+  const [loading, setLoading] = useState(true);
 
-    if (!promiseCache.has(cacheKey)) {
-        const promise = fetchData<IGamePreview[]>(`/api/popular_games?page_size=${page_size}`);
-        promiseCache.set(cacheKey, promise);
-    }
+  const cacheKey = `popular-${query}-${pageSize}`;
 
-    const cachedPromise = promiseCache.get(cacheKey)!;
-    promiseRef.current = cachedPromise;
-    const games = use(cachedPromise);
+  useEffect(() => {
+    const loadGames = async () => {
+      if (cache.has(cacheKey)) {
+        setGames(cache.get(cacheKey)!);
+        setLoading(false);
+        return;
+      }
 
-    useEffect(() => {
-        return () => {
-            if (promiseRef.current) {
-                promiseCache.delete(cacheKey);
-            }
-        };
-    }, [cacheKey]);
+      try {
+        const data = await fetchData<IGamePreview[]>(
+          `/api/popular_games?page_size=${pageSize}`
+        );
 
-    return { games };
-}
+        cache.set(cacheKey, data);
+        setGames(data);
+      } catch (err) {
+        console.error("Failed to fetch popular games", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadGames();
+  }, [cacheKey, pageSize]);
+
+  return { games, loading };
+};

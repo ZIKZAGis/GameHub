@@ -1,31 +1,41 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { fetchData } from "@/lib/typedFetch";
 import { IGamePreview } from "@/types/game";
-import { use, useEffect, useRef } from "react";
 
-const promiseCache = new Map<string, Promise<IGamePreview[]>>();
+const cache = new Map<string, IGamePreview[]>();
 
-export const useComingSoon = (query: string = '', page_size = 12) => {
-    const cacheKey = `new-releases-${query}-${page_size}`;
-    const promiseRef = useRef<Promise<IGamePreview[]> | null>(null);
+export const useComingSoon = (query: string = '', pageSize = 12) => {
+  const [games, setGames] = useState<IGamePreview[]>([]);
+  const [loading, setLoading] = useState(true);
 
-    if (!promiseCache.has(cacheKey)) {
-        const promise = fetchData<IGamePreview[]>(`/api/coming_soon?page_size=${page_size}`);
-        promiseCache.set(cacheKey, promise);
-    }
+  const cacheKey = `new-releases-${query}-${pageSize}`;
 
-    const cachedPromise = promiseCache.get(cacheKey)!;
-    promiseRef.current = cachedPromise;
-    const games = use(cachedPromise);
+  useEffect(() => {
+    const loadGames = async () => {
+      if (cache.has(cacheKey)) {
+        setGames(cache.get(cacheKey)!);
+        setLoading(false);
+        return;
+      }
 
-    useEffect(() => {
-        return () => {
-            if (promiseRef.current) {
-                promiseCache.delete(cacheKey);
-            }
-        };
-    }, [cacheKey]);
+      try {
+        const data = await fetchData<IGamePreview[]>(
+          `/api/coming_soon?page_size=${pageSize}`
+        );
 
-    return { games };
-}
+        cache.set(cacheKey, data);
+        setGames(data);
+      } catch (error) {
+        console.error("Failed to fetch new releases", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadGames();
+  }, [cacheKey, pageSize]);
+
+  return { games, loading };
+};
