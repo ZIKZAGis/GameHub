@@ -1,8 +1,8 @@
 "use client";
 
-import { fetchData } from "@/lib/typedFetch";
+import { useEffect, useState } from "react";
 import { IGamePreview } from "@/types/game";
-import { use, useEffect } from "react";
+import { fetchData } from "@/lib/typedFetch";
 
 interface GameListResult {
   games: IGamePreview[];
@@ -10,28 +10,49 @@ interface GameListResult {
   currentPage: number;
 }
 
-const gameListCache = new Map<string, Promise<GameListResult>>();
+const gameListCache = new Map<string, GameListResult>();
 
-export const useGameList = (query: string = '', page: number = 1, page_size = 21): GameListResult => {
-    const cacheKey = `${query}-${page}-${page_size}`;
-    
-    useEffect(() => {
-        return () => {
-            gameListCache.delete(cacheKey);
+export const useGameList = (
+  query: string = '',
+  page: number = 1,
+  pageSize: number = 21
+): GameListResult => {
+  const [result, setResult] = useState<GameListResult>({
+    games: [],
+    hasNextPage: false,
+    currentPage: page,
+  });
+
+  const cacheKey = `${query}-${page}-${pageSize}`;
+
+  useEffect(() => {
+    const loadData = async () => {
+      if (gameListCache.has(cacheKey)) {
+        setResult(gameListCache.get(cacheKey)!);
+        return;
+      }
+
+      try {
+        const games = await fetchData<IGamePreview[]>(
+          `/api/game_list?search=${encodeURIComponent(query)}&page=${page}&page_size=${pageSize}`
+        );
+
+        const data: GameListResult = {
+          games,
+          hasNextPage: games.length === pageSize,
+          currentPage: page,
         };
-    }, [cacheKey]);
-    
-    if (!gameListCache.has(cacheKey)) {
-        const promise = fetchData<IGamePreview[]>(
-            `/api/game_list?search=${encodeURIComponent(query)}&page=${page}&page_size=${page_size}`
-        ).then(games => ({
-            games,
-            hasNextPage: games.length === page_size,
-            currentPage: page
-        }));
-        gameListCache.set(cacheKey, promise);
-    }
-    
-    const result = use(gameListCache.get(cacheKey)!);
-    return result;
+
+        gameListCache.set(cacheKey, data);
+        setResult(data);
+      } catch (error) {
+        console.error("Failed to fetch game list:", error);
+      }
+    };
+
+    loadData();
+
+  }, [query, page, pageSize, cacheKey]);
+
+  return result;
 };
