@@ -6,6 +6,36 @@ import Image from "next/image";
 import React from "react";
 import defaultGameImage from "@/app/assets/images/default-game-image.jpg";
 
+// move to ./components/GameContent/index.ts
+function GameContent({ gameId }: { gameId: number }) {
+  const { game } = useGame(gameId);
+
+  return (
+    <div className="flex flex-col gap-4">
+      <h1 className="text-3xl text-center">{game?.name}</h1>
+
+      <Image
+        src={game?.background_image || defaultGameImage.src}
+        alt={game?.name || "Game Image"}
+        width={700}
+        height={390}
+        className="w-[700px] h-auto m-auto"
+        priority={false}
+        onError={(e) => {
+          e.currentTarget.src = defaultGameImage.src;
+        }}
+      />
+      <p>{game?.description_raw}</p>
+      <ul>
+        {game?.genres.map((genre) => (
+          <li key={genre.id}>{genre.name}</li>
+        ))}
+      </ul>
+      <div>{game?.rating}</div>
+    </div>
+  );
+}
+
 export default function GamePage({
   params,
 }: {
@@ -13,7 +43,6 @@ export default function GamePage({
 }) {
   const resolvedParams = React.use(params);
   const { id } = resolvedParams;
-  const { game } = useGame(Number(id));
 
   return (
     <CustomSuspense
@@ -22,28 +51,7 @@ export default function GamePage({
         <div className="text-center text-red-500">Ошибка загрузки игры</div>
       }
     >
-      <div className="flex flex-col gap-4">
-        <h1 className="text-3xl text-center">{game?.name}</h1>
-
-        <Image
-          src={game?.background_image || defaultGameImage.src}
-          alt={game?.name || "Game Image"}
-          width={700}
-          height={390}
-          className="w-[700px] h-auto m-auto"
-          priority={false}
-          onError={(e) => {
-            e.currentTarget.src = defaultGameImage.src;
-          }}
-        />
-        <p>{game?.description_raw}</p>
-        <ul>
-          {game?.genres.map((genre) => (
-            <li key={genre.id}>{genre.name}</li>
-          ))}
-        </ul>
-        <div>{game?.rating}</div>
-      </div>
+      <GameContent gameId={Number(id)} />
     </CustomSuspense>
   );
 }

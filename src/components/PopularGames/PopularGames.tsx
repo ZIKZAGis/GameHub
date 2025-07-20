@@ -1,42 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import { usePopularGames } from "@/hooks/usePopularGames";
+import { useState } from "react";
+import { useDetailedPopularGames } from "@/hooks/useDetailedPopularGames";
 import { useNavigation } from "@/lib/navigation";
 import defaultGameImage from "@/app/assets/images/default-game-image.jpg";
 
-import { IGame } from "@/types/game";
-import { getGameById } from "@/lib/api";
-
 export default function PopularGames() {
-  const { games } = usePopularGames("", 8);
-  const [selectedGameId, setSelectedGameId] = useState<number | null>(null);
+  const { games, detailedGames, isLoading, selectedGameId: initialSelectedId } = useDetailedPopularGames("", 8);
+  const [selectedGameId, setSelectedGameId] = useState<number | null>(initialSelectedId);
   const { navigateToGameDetails } = useNavigation();
-  const [detailedGames, setDetailedGames] = useState<IGame[]>([]);
-  const [loadingDetails, setLoadingDetails] = useState(false);
-  const selectedGame = detailedGames.find((game) => game.id === selectedGameId)
 
-  const previousIdsRef = useRef<number[]>([]);
-  
-  useEffect(() => {
-    if (games.length > 0) {
-      const ids = games.map((game) => game.id);
-      const prevIds = previousIdsRef.current
-      const isSame = ids.length === prevIds.length && ids.every((id, i) => id === prevIds[i])
-
-      if (!isSame) {
-        previousIdsRef.current = ids
-        setSelectedGameId((prev) => prev ?? ids[0])
-        setLoadingDetails(true)
-
-        Promise.all(ids.map(getGameById))
-          .then(setDetailedGames)
-          .finally(() => setLoadingDetails(false))
-      }
-    }
-  }, [games]);
-
+  const selectedGame = detailedGames.find((game) => game.id === selectedGameId);
 
   const handleGameClick = (gameId: number) => {
     setSelectedGameId(gameId);
@@ -50,7 +25,7 @@ export default function PopularGames() {
 
       <div className="grid grid-cols-[0.4fr_1fr] gap-6">
         <div>
-          {selectedGame && !loadingDetails && (
+          {selectedGame && !isLoading && (
             <ul className="text-center">
               <li className="font-bold text-xl mb-2">{selectedGame.name}</li>
               <li className="text-gray-500 mb-3">
@@ -107,6 +82,7 @@ export default function PopularGames() {
                   src={game.background_image}
                   alt=""
                   fill
+                  unoptimized={true}
                   className="object-cover blur-md opacity-70 scale-120"
                 />
               </div>
@@ -115,6 +91,7 @@ export default function PopularGames() {
                 alt={game.name}
                 width={500}
                 height={500}
+                unoptimized={true}
                 className="relative z-10 w-full h-full object-contain object-center"
                 priority={true}
                 onError={(e) => {
