@@ -11,7 +11,7 @@ import { getGameById } from "@/lib/api";
 
 export default function PopularGames() {
   const { games } = usePopularGames("", 8);
-  const [selectedGameId, setSelectedGameId] = useState<number | null>(null);
+  const [selectedGameId, setSelectedGameId] = useState<number | null>(games[0].id ?? null);
   const { navigateToGameDetails } = useNavigation();
   const [detailedGames, setDetailedGames] = useState<IGame[]>([]);
   const [loadingDetails, setLoadingDetails] = useState(false);
@@ -19,6 +19,11 @@ export default function PopularGames() {
 
   const previousIdsRef = useRef<number[]>([]);
   
+  // sync api
+  // bd
+  // browser API
+  // TODO refactor:
+    
   useEffect(() => {
     if (games.length > 0) {
       const ids = games.map((game) => game.id);

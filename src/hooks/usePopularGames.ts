@@ -39,3 +39,4 @@ export const usePopularGames = (query: string = '', pageSize = 8) => {
 
   return { games, loading };
 };
+
