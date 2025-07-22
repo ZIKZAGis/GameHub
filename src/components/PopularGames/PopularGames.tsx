@@ -1,46 +1,22 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
 import { usePopularGames } from "@/hooks/usePopularGames";
 import { useNavigation } from "@/lib/navigation";
 import defaultGameImage from "@/app/assets/images/default-game-image.jpg";
 
-import { IGame } from "@/types/game";
-import { getGameById } from "@/lib/api";
-
 export default function PopularGames() {
-  const { games } = usePopularGames("", 8);
-  const [selectedGameId, setSelectedGameId] = useState<number | null>(null);
+  const { 
+    games,
+    loading,
+    loadingDetails,
+    selectedGameId,
+    selectedGame,
+    handleGameClick
+  } = usePopularGames("", 8);
   const { navigateToGameDetails } = useNavigation();
-  const [detailedGames, setDetailedGames] = useState<IGame[]>([]);
-  const [loadingDetails, setLoadingDetails] = useState(false);
-  const selectedGame = detailedGames.find((game) => game.id === selectedGameId)
 
-  const previousIdsRef = useRef<number[]>([]);
-  
-  useEffect(() => {
-    if (games.length > 0) {
-      const ids = games.map((game) => game.id);
-      const prevIds = previousIdsRef.current
-      const isSame = ids.length === prevIds.length && ids.every((id, i) => id === prevIds[i])
-
-      if (!isSame) {
-        previousIdsRef.current = ids
-        setSelectedGameId((prev) => prev ?? ids[0])
-        setLoadingDetails(true)
-
-        Promise.all(ids.map(getGameById))
-          .then(setDetailedGames)
-          .finally(() => setLoadingDetails(false))
-      }
-    }
-  }, [games]);
-
-
-  const handleGameClick = (gameId: number) => {
-    setSelectedGameId(gameId);
-  };
+  if (loading) return <div>Loading...</div>
 
   return (
     <div className="w-full p-4">
@@ -93,6 +69,7 @@ export default function PopularGames() {
                 h-[250px]
                 cursor-pointer
                 transition-all
+                group
                 ${
                   selectedGameId === game.id
                     ? "ring-2 ring-[#ff5338] scale-103"
@@ -107,7 +84,7 @@ export default function PopularGames() {
                   src={game.background_image}
                   alt=""
                   fill
-                  className="object-cover blur-md opacity-70 scale-120"
+                  className="object-cover blur-md opacity-70 scale-100 transition-transform duration-300 ease-in-out group-hover:scale-140"
                 />
               </div>
               <Image
