@@ -1,10 +1,9 @@
 'use client'
 
 import Category from "@/components/Category/Category";
-import ComingSoon from "@/components/ComingSoon/ComingSoon";
-import NewReleases from "@/components/NewReleases/NewReleases";
 import PopularGames from "@/components/PopularGames/PopularGames";
 import CustomSuspense from "@/app/ui/CustomSuspense/CustomSuspense";
+import GameSection from "@/components/GameSection/GameSection";
 
 // todo можно сделать не общий suspense (здесь его убрать), а в каждом компоненте со своим скелетоном
 export default function Home() {
@@ -18,8 +17,8 @@ export default function Home() {
       >
         <PopularGames />
         <Category />
-        <NewReleases />
-        <ComingSoon />
+        <GameSection title="New Releases" period="past"/>
+        <GameSection title="Coming Soon" period="future"/>
       </CustomSuspense>
     </div>
   );

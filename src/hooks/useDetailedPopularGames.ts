@@ -18,7 +18,8 @@ export const useDetailedPopularGames = (
 ): DetailedPopularGamesResult => {
   const { data: popularGames, isLoading: isLoadingList } = useSWR<IGamePreview[]>(
     `/api/popular_games?search=${encodeURIComponent(query)}&page_size=${pageSize}`,
-    { suspense: true }
+    fetchData,
+    { suspense: true, fallbackData: [] } ///??? А нужен ли вообще suspense при использовании "use client"?
   );
 
   const gameIds = popularGames?.map(game => game.id) || [];

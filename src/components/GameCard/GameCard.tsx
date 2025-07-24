@@ -42,7 +42,7 @@ export default function GameCard({
                 {released && <span>Release date: {new Date(released).toLocaleDateString()}</span>}
                 {platforms && <span>{platforms.map((pl) => pl.platform.name).join(" | ")}</span>}
                 {rating != undefined && <span>{rating > 0 ? `Rating: ${rating}` : 'No rating'}</span>}
-                {genres && <span>{genres[0].name}</span>}
+                {genres?.length && <span>{genres[0].name}</span>}
             </div>
         </div>
     </div>
