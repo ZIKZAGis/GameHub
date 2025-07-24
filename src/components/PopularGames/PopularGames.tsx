@@ -34,7 +34,7 @@ export default function PopularGames() {
                   : selectedGame.description_raw}
               </li>
               <li className="mb-2">
-                {`Rating: ${selectedGame.rating} | Release: ${selectedGame.released} | Genre: ${selectedGame.genres[0]?.name}`}
+                {`Rating: ${selectedGame.rating > 0 ? selectedGame.rating : '-'} | Release: ${selectedGame.released} | Genre: ${selectedGame.genres[0]?.name}`}
               </li>
               <li className="mb-4">
                 Platforms:{" "}
@@ -68,6 +68,7 @@ export default function PopularGames() {
                 h-[250px]
                 cursor-pointer
                 transition-all
+                group
                 ${
                   selectedGameId === game.id
                     ? "ring-2 ring-[#ff5338] scale-103"
@@ -83,7 +84,7 @@ export default function PopularGames() {
                   alt=""
                   fill
                   unoptimized={true}
-                  className="object-cover blur-md opacity-70 scale-120"
+                  className="object-cover blur-md opacity-70 scale-100 transition-transform duration-300 ease-in-out group-hover:scale-140"
                 />
               </div>
               <Image
