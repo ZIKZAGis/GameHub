@@ -1,6 +1,6 @@
 'use client'
 
-import { useGameList } from "@/hooks/useGameList"
+import { useGameSearch } from "@/hooks/useGameSearch"
 import { useState, useRef, useEffect } from "react"
 import { useNavigation } from "@/lib/navigation";
 import useDebounce from "@/hooks/useDebounce";
@@ -11,7 +11,7 @@ export default function GameSearchInput() {
   const debouncedQuery = useDebounce(searchQuery, 300)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
-  const { games } = useGameList(debouncedQuery, 1, 5);
+  const { games, isLoading } = useGameSearch(debouncedQuery, 5);
   const { navigateToGameDetails } = useNavigation();
 
   useEffect(() => {
@@ -37,7 +37,9 @@ export default function GameSearchInput() {
 
       {isDropdownOpen && (
         <div className="absolute z-10 w-full mt-1 bg-[#60258A] overflow-hidden rounded-md shadow-lg">
-          {games.length > 0 ? (
+          {isLoading ? (
+            <div className="px-4 py-2 text-gray-300">Searching...</div>
+          ) : games.length > 0 ? (
             <ul>
               {games.map((game) => (
                 <li

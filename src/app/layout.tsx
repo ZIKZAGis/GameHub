@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
+import SWRProvider from "@/components/providers/SWRProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,7 +32,9 @@ export default function RootLayout({
       >
         <Header/>
         <main className="flex-grow justify-items-center w-full max-w-7xl font-[family-name:var(--font-geist-sans)] px-4 py-10 m-auto">
-          {children}
+          <SWRProvider>
+            {children}
+          </SWRProvider>
         </main>
         <Footer/>
       </body>
