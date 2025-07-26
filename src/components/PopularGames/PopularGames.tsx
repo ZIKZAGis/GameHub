@@ -1,14 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDetailedPopularGames } from "@/hooks/useDetailedPopularGames";
 import { useNavigation } from "@/lib/navigation";
 import defaultGameImage from "@/app/assets/images/default-game-image.jpg";
 
 export default function PopularGames() {
   const { games, detailedGames, isLoading, selectedGameId: initialSelectedId } = useDetailedPopularGames("", 8);
-  const [selectedGameId, setSelectedGameId] = useState<number | null>(initialSelectedId);
+  const [selectedGameId, setSelectedGameId] = useState(initialSelectedId);
   const { navigateToGameDetails } = useNavigation();
 
   const selectedGame = detailedGames.find((game) => game.id === selectedGameId);
@@ -16,6 +16,13 @@ export default function PopularGames() {
   const handleGameClick = (gameId: number) => {
     setSelectedGameId(gameId);
   };
+
+  /// todo избавиться от useEffect
+  useEffect(() => {
+    if (games.length > 0) {
+      setSelectedGameId(games[0].id)
+    }
+  }, [games.length])
 
   return (
     <div className="w-full p-4">

@@ -19,7 +19,7 @@ export const useDetailedPopularGames = (
   const { data: popularGames, isLoading: isLoadingList } = useSWR<IGamePreview[]>(
     `/api/popular_games?search=${encodeURIComponent(query)}&page_size=${pageSize}`,
     fetchData,
-    { suspense: true, fallbackData: [] } ///??? А нужен ли вообще suspense при использовании "use client"?
+    { suspense: true, fallbackData: [] }
   );
 
   const gameIds = popularGames?.map(game => game.id) || [];
@@ -29,6 +29,7 @@ export const useDetailedPopularGames = (
 
   const fetchGameDetails = async (url: string): Promise<IGame[]> => {
     const ids = new URL(url, window.location.origin).searchParams.get('ids')?.split(',');
+    
     if (!ids) return [];
     
     const promises = ids.map(id => fetchData<IGame>(`/api/game/${id}`));
@@ -42,10 +43,12 @@ export const useDetailedPopularGames = (
       suspense: false,
       revalidateOnFocus: false,
       dedupingInterval: 60000
+      
     }
   );
 
   let selectedGameId = initialSelectedId;
+  
   if (!selectedGameId && gameIds.length > 0) {
     selectedGameId = gameIds[0];
   }
