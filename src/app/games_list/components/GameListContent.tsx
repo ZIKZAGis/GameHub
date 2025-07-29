@@ -4,18 +4,22 @@ import { useGameList } from "@/hooks/useGameList";
 import { useNavigation } from "@/lib/navigation";
 import Pagination from "@/components/Pagination/Pagination";
 import Image from "next/image";
-import React, { useState } from "react";
+import React from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function GameListContent() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const { games, hasNextPage } = useGameList("", currentPage);
+  const { games, hasNextPage, currentPage } = useGameList();
   const { navigateToGameDetails } = useNavigation();
 
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
   const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', String(newPage))
+    router.push(`/games_list?${params.toString()}`)
   };
-  
-  // TODO move to a separate component ./GameListCard
+
   return (
     <div className="flex flex-col gap-8">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
