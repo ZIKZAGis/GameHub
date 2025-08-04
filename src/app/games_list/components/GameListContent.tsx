@@ -6,6 +6,7 @@ import Pagination from "@/components/Pagination/Pagination";
 import Image from "next/image";
 import React from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import GameFilterPanel from "@/components/GameFilterPanel/GameFilterPanel";
 
 export default function GameListContent() {
   const { games, hasNextPage, currentPage } = useGameList();
@@ -22,6 +23,7 @@ export default function GameListContent() {
 
   return (
     <div className="flex flex-col gap-8">
+      <GameFilterPanel/>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {games.map((game) => (
           <div
