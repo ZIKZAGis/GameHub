@@ -6,31 +6,48 @@ import { useNavigation } from "@/lib/navigation";
 import useDebounce from "@/hooks/useDebounce";
 import { useClickOutside } from "@/hooks/useClickOutside";
 
-export default function GameSearchInput() {
-  const [searchQuery, setSearchQuery] = useState('')
-  const debouncedQuery = useDebounce(searchQuery, 300)
+type Props = {
+  searchQuery?: string;
+  setSearchQuery?: (value: string) => void;
+  standalone?: boolean;
+}
+
+export default function GameSearchInput({ searchQuery, setSearchQuery, standalone = false }: Props) {
+  const [localQuery, setLocalQuery] = useState('');
+  const isControlled = !standalone && typeof searchQuery === 'string' && typeof setSearchQuery === 'function';
+
+  const query = isControlled ? searchQuery! : localQuery;
+  const setQuery = isControlled ? setSearchQuery! : setLocalQuery;
+
+  const debouncedQuery = useDebounce(query, 300);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const { games, isLoading } = useGameSearch(debouncedQuery, 5);
   const { navigateToGameDetails } = useNavigation();
 
   useEffect(() => {
-    setIsDropdownOpen(debouncedQuery.length > 0)
+    setIsDropdownOpen(debouncedQuery.length > 0);
   }, [debouncedQuery]);
 
   useClickOutside(searchRef, () => setIsDropdownOpen(false));
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
+    setQuery(e.target.value);
+  };
+
+  const handleGameClick = (id: number) => {
+    setQuery('');
+    setIsDropdownOpen(false);
+    navigateToGameDetails(id);
   };
 
   return (
     <div className="relative" ref={searchRef}>
       <input
         type="text"
-        value={searchQuery}
+        value={query}
         onChange={handleInputChange}
-        onFocus={() => searchQuery.length > 0 && setIsDropdownOpen(true)}
+        onFocus={() => query.length > 0 && setIsDropdownOpen(true)}
         placeholder="Search games..."
         className="w-full px-4 py-2 border-2 border-[#60258A] rounded-md focus:outline-none focus:border-[#ff5338] transition-all ease-in"
       />
@@ -45,20 +62,17 @@ export default function GameSearchInput() {
                 <li
                   key={game.id}
                   className="px-4 py-2 hover:bg-[#ff5338] cursor-pointer transition-all ease-in"
-                  onClick={() => {
-                    setSearchQuery("");
-                    setIsDropdownOpen(false);
-                    navigateToGameDetails(game.id);
-                  }}
-                >{game.name}</li>
+                  onClick={() => handleGameClick(game.id)}
+                >
+                  {game.name}
+                </li>
               ))}
             </ul>
           ) : debouncedQuery ? (
             <div className="px-4 py-2 text-gray-500">Game not found</div>
-          ): null}
+          ) : null}
         </div>
       )}
     </div>
-  )
+  );
 }
-
