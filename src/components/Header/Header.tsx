@@ -3,6 +3,7 @@
 import Link from "next/link";
 import GameSearchInput from "../GameSearchInput/GameSearchInput";
 import { usePathname } from "next/navigation";
+import AuthStatus from "../AuthStatus/AuthStatus";
 
 export default function Header() {
   const pathname = usePathname()
@@ -15,7 +16,7 @@ export default function Header() {
         {pathname !== '/games_list' && <GameSearchInput />}
 
         <Link href="/games_list">Game list</Link>
-        <Link href="/auth_page">Icon</Link>
+        <AuthStatus/>
       </div>
     </div>
   );
