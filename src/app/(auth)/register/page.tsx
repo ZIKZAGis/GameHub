@@ -85,7 +85,7 @@ export default function RegisterPage() {
                 </button>
             </form>
             <p className="text-sm mt-3">
-                Уже есть аккаунт? <a href="/logn" className="underline">Войдите</a>
+                Уже есть аккаунт? <a href="/login" className="underline">Войдите</a>
             </p>
         </div>
     )
