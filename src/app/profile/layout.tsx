@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 
 export const metadata: Metadata = {
-  title: "Страница игры",
+  title: "Профил игрока",
 };
 
 export default function ProfileLayout({
