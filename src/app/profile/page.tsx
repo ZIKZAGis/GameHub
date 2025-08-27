@@ -68,7 +68,7 @@ export default async function ProfilePage() {
               <li key={rating.id} className="p-3 rounded bg-gray-900">
                 <div className="flex justify-between">
                   <span>Игра: {rating.gameId}</span>
-                  <span className="font-bold">{rating.score}/10</span>
+                  <span className="font-bold">{rating.score}/5</span>
                 </div>
                 {rating.review && (
                   <p className="text-gray-300 mt-1">{rating.review}</p>

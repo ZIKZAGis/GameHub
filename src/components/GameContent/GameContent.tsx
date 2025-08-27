@@ -2,6 +2,8 @@ import { useGame } from "@/hooks/useGame";
 import Image from "next/image";
 import React from "react";
 import defaultGameImage from "@/app/assets/images/default-game-image.jpg";
+import FavoriteButton from "../FavoriteButton/FavoriteButton";
+import RatingStars from "../RatingStars/RatingStars";
 
 export default function GameContent({ gameId }: { gameId: number }) {
   const { game } = useGame(gameId);
@@ -21,13 +23,15 @@ export default function GameContent({ gameId }: { gameId: number }) {
           e.currentTarget.src = defaultGameImage.src;
         }}
       />
+      <FavoriteButton gameId={gameId.toString()}/>
+      <div>Общая оценка {game?.rating}</div>
+      <div>Моя оценка <RatingStars gameId={gameId.toString()}/></div>
       <p>{game?.description_raw}</p>
       <ul>
         {game?.genres.map((genre) => (
           <li key={genre.id}>{genre.name}</li>
         ))}
       </ul>
-      <div>{game?.rating}</div>
     </div>
   );
 }
