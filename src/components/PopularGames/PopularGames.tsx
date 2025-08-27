@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useDetailedPopularGames } from "@/hooks/useDetailedPopularGames";
 import { useNavigation } from "@/lib/navigation";
 import defaultGameImage from "@/app/assets/images/default-game-image.jpg";
+import FavoriteButton from "@/components/FavoriteButton/FavoriteButton";
 
 export default function PopularGames() {
   const { games, detailedGames, isLoading, selectedGameId: initialSelectedId } = useDetailedPopularGames("", 8);
@@ -17,11 +18,11 @@ export default function PopularGames() {
     setSelectedGameId(gameId);
   };
 
-  /// todo избавиться от useEffect
   useEffect(() => {
     if (games.length > 0) {
       setSelectedGameId(games[0].id)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [games.length])
 
   return (
@@ -56,9 +57,7 @@ export default function PopularGames() {
                 >
                   More details
                 </button>
-                <button className="bg-[#ff5338] text-white px-4 py-2 rounded-xl transition-all ease-linear hover:bg-[#ED2809] cursor-pointer">
-                  Add to track
-                </button>
+                <FavoriteButton gameId={selectedGameId!.toString()}/>
               </li>
             </ul>
           )}
