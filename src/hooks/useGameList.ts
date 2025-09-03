@@ -1,24 +1,62 @@
 "use client";
 
-import { fetchData } from "@/lib/typedFetch";
-import { IGamePreview, IGetGameList } from "@/types/game";
-import { useEffect, useState } from "react";
+import useSWR from 'swr';
+import { useSearchParams } from 'next/navigation';
+import { IGamePreview } from "@/types/game";
 
-export const useGameList = (query: string = '', page: number = 1, page_size = 21) => {
-    const [state, setState] = useState<IGetGameList>({
-        games: [],
-        loading: false,
-        error: null
-    });
-
-    useEffect(() => {
-        setState(prev => ({ ...prev, loading: true, error: null }));
-
-        fetchData<IGamePreview[]>(`/api/game_list?search=${encodeURIComponent(query)}&page=${page}&page_size=${page_size}`)
-            .then(games => setState({games, loading: false, error: null}))
-            .catch(err => setState({games: [], loading: false, error: err.message}))
-            
-    }, [query, page, page_size]);
-
-    return state;
+interface GameListResult {
+  games: IGamePreview[];
+  hasNextPage: boolean;
+  currentPage: number;
+  isLoading: boolean;
 }
+
+export const useGameList = (
+  defaultPageSize: number = 21,
+  useSuspense: boolean = true
+): GameListResult => {
+  const searchParams = useSearchParams();
+  
+  const page = Number(searchParams.get("page") || '1');
+  const page_size = Number(searchParams.get("page_size") || String(defaultPageSize));
+
+  const queryParams = new URLSearchParams({
+    page: String(page),
+    page_size: String(page_size),
+  });
+
+  const keys = [
+    "search",
+    "genres",
+    "platforms",
+    "ordering",
+    "dates",
+    "metacritic",
+    "tags",
+  ];
+
+  for (const key of keys) {
+    const value = searchParams.get(key);
+    if (value) queryParams.set(key, value);
+  }
+
+  const key = `/api/game_list?${queryParams.toString()}`;
+  
+  const { data, isLoading } = useSWR<IGamePreview[]>(
+    key,
+    {
+      suspense: useSuspense,
+      fallbackData: []
+    }
+  );
+
+  const games = data ?? [];
+
+  return {
+    games,
+    hasNextPage: games.length === Number(page_size),
+    currentPage: Number(page),
+    isLoading
+  };
+};
+

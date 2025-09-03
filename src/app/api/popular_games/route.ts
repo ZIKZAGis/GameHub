@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { getLastThreeMonthsRange } from "./helpers/getLastThreeMonthsRange";
+import { getMonthsRange } from "@/lib/getMonthsRange";
 
 const apiKey = process.env.RAWG_API_KEY;
 
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
-    const { startDate, endDate } = getLastThreeMonthsRange();
+    const { startDate, endDate } = getMonthsRange('past', 3);
     const dates = `${startDate},${endDate}`
     const page_size = searchParams.get('page_size') || '8';
 
