@@ -23,7 +23,7 @@ export default function AuthStatus() {
   return (
     <div className="flex items-center gap-2">
       <span 
-        onClick={() => router.push("profile")}
+        onClick={() => router.push("/profile")}
         className="cursor-pointer"
       >
         {session.user.name ?? session.user.email}

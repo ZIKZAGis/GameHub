@@ -1,13 +1,29 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import { useFavorites } from "@/hooks/useFavorites";
+import { useRouter } from "next/navigation"
 
 interface FavoriteButtonProps {
   gameId: string;
 }
 
 export default function FavoriteButton({ gameId }: FavoriteButtonProps) {
-  const { favorites, addFavorite, removeFavorite } = useFavorites();
+  const { data: session } = useSession()
+  const { favorites = [], addFavorite, removeFavorite } = useFavorites();
+  const router = useRouter()
+  
+  if (!session) {
+    return (
+      <button 
+        className={`px-4 py-2 rounded-xl transition-all ease-linear hover:bg-[#ED2809] cursor-pointer text-white bg-[#413b3b]`}
+        onClick={() => router.push("/login")}
+      >
+          Login to track
+      </button>
+    )
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const isFavorite = favorites.some((f: any) => f.gameId === gameId);
 
