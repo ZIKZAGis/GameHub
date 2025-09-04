@@ -17,7 +17,7 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
           className="w-16 h-16 rounded-full border"
         />
         <div>
-          <p className="font-medium">{user.name ?? "Без имени"}</p>
+          <p className="font-medium">{user.name ?? "Unknown gamer"}</p>
           <p className="text-sm text-gray-400">{user.email}</p>
         </div>
       </div>
