@@ -11,7 +11,7 @@ export default function ProfileLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div>
+    <div className="w-full">
       {children}
     </div>
   );
