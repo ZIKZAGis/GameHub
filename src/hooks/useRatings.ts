@@ -2,7 +2,23 @@
 
 import useSWR from "swr";
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = async (url: string) => {
+  const res = await fetch(url);
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch ${url}: ${res.status}`);
+  }
+
+  const text = await res.text();
+  if (!text) return [];
+
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    console.error(`Invalid JSON from ${url}:`, text, e);
+    throw new Error("Invalid JSON response");
+  }
+};
 
 export function useRatings(gameId: string) {
   const { data, error, mutate } = useSWR(
@@ -17,7 +33,10 @@ export function useRatings(gameId: string) {
       body: JSON.stringify({ gameId, score, review }),
     });
 
-    if (!res.ok) throw new Error("Failed to save rating");
+    if (!res.ok) {
+      const msg = await res.text();
+      throw new Error(`Failed to save rating: ${msg}`);
+    }
 
     mutate();
   };
@@ -29,7 +48,10 @@ export function useRatings(gameId: string) {
       body: JSON.stringify({ gameId }),
     });
 
-    if (!res.ok) throw new Error("Failed to delete rating");
+    if (!res.ok) {
+      const msg = await res.text();
+      throw new Error(`Failed to delete rating: ${msg}`);
+    }
 
     mutate();
   };

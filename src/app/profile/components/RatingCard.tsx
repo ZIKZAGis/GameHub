@@ -1,31 +1,49 @@
-"use client"
+"use client";
 
-import { useGame } from "@/hooks/useGame"
-import Image from "next/image"
-import { Rating } from "@prisma/client"
+import { useGame } from "@/hooks/useGame";
+import { Rating } from "@prisma/client";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import RatingStars from "@/components/RatingStars/RatingStars";
+import defaultGameImage from "@/app/assets/images/default-game-image.jpg";
 
 export default function RatingCard({ rating }: { rating: Rating }) {
-  const { game } = useGame(Number(rating.gameId))
+  const { game } = useGame(Number(rating.gameId));
+  const router = useRouter();
 
-  if (!game) return null
+  if (!game) return null;
+
+  const handleCardClick = () => {
+    router.push(`/game/${rating.gameId}`);
+  };
 
   return (
-    <div className="min-w-[160px] md:min-w-0 bg-gray-900 rounded-lg p-2 flex-shrink-0 hover:shadow-md transition">
+    <div
+      onClick={handleCardClick}
+      className="relative aspect-video rounded-xl overflow-hidden flex-shrink-0 group shadow-lg cursor-pointer"
+    >
       <Image
-        src={game.background_image ?? "/placeholder.png"}
+        src={game.background_image ?? defaultGameImage.src}
         alt={game.name}
-        width={150}
-        height={200}
-        className="rounded-md w-full h-auto"
+        fill
+        className="object-cover"
       />
-      <p className="mt-2 text-sm font-medium truncate">{game.name}</p>
-      <div className="flex items-center gap-1 text-yellow-400 text-sm">
-        {"★".repeat(rating.score)}
-        {"☆".repeat(5 - rating.score)}
+
+      <div className="absolute inset-0 bg-black/60 group-hover:bg-black/70 transition" />
+
+      <div
+        className="absolute inset-0 flex items-center justify-center"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <RatingStars
+          gameId={rating.gameId}
+          removeClassName="top-[-40px] right-[-25px]"
+        />
       </div>
-      <button className="mt-1 text-xs text-red-400 hover:underline">
-        Remove
-      </button>
+
+      <p className="absolute bottom-2 left-1/2 -translate-x-1/2 text-center text-sm font-semibold text-white px-2 truncate max-w-[90%]">
+        {game.name}
+      </p>
     </div>
-  )
+  );
 }

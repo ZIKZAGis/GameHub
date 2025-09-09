@@ -21,7 +21,7 @@ export default function FavoriteList({ favorites }: FavoriteListProps) {
         <div
           className="
             flex gap-4 overflow-x-auto pb-2
-            md:grid md:grid-cols-3 md:gap-6 md:overflow-visible
+            md:grid md:grid-cols-4 md:gap-4 md:overflow-visible
           "
         >
           {favorites.map((fav) => (
