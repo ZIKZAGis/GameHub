@@ -5,7 +5,8 @@ export const fetcher = (url: string) => fetchData(url)
 
 export const swrConfig: SWRConfiguration = {
   fetcher,
-  suspense: true,
+  // suspense: true, позже решить, что с этим делать.
+  suspense: false,
   revalidateOnFocus: false,
   revalidateOnReconnect: true,
   dedupingInterval: 5000,

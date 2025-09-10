@@ -45,16 +45,18 @@ export default function RatingStars({
   }
 
   return (
-    <div className="relative flex items-center justify-center">
+    <div className="flex items-center justify-center">
       <div className="flex gap-1">
         {[1, 2, 3, 4, 5].map((star) => (
           <Star
             key={star}
-            className={`h-6 w-6 cursor-pointer transition ${
-              star <= (hovered || myRating?.score || 0)
-                ? "fill-yellow-400 text-yellow-400"
-                : "text-gray-400"
-            }`}
+              className={clsx(
+                "cursor-pointer transition",
+                "h-[clamp(16px,2vw,28px)] w-[clamp(16px,2vw,28px)]", // динамический размер
+                star <= (hovered || myRating?.score || 0)
+                  ? "fill-[#ff5338] text-[#ff5338]"
+                  : "text-gray-400"
+              )}
             onMouseEnter={() => setHovered(star)}
             onMouseLeave={() => setHovered(0)}
             onClick={() => handleClick(star)}
@@ -65,7 +67,7 @@ export default function RatingStars({
       {showRemove && myRating && (
         <button
           className={clsx(
-            "absolute top-0 right-0 p-1 rounded-full bg-black/50 hover:bg-red-500 hover:text-white text-red-400 transition cursor-pointer",
+            "absolute p-1 rounded-full bg-black/50 hover:bg-[#ED2809] hover:text-white text-red-400 transition cursor-pointer",
             removeClassName
           )}
           onClick={handleRemove}
