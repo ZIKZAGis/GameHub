@@ -37,11 +37,17 @@ export default function RatingCard({ rating }: { rating: Rating }) {
       >
         <RatingStars
           gameId={rating.gameId}
-          removeClassName="top-[-40px] right-[-25px]"
+          removeClassName="top-1 right-1"
         />
       </div>
 
-      <p className="absolute bottom-2 left-1/2 -translate-x-1/2 text-center text-sm font-semibold text-white px-2 truncate max-w-[90%]">
+      <p className="
+        absolute bottom-2 
+        left-1/2 -translate-x-1/2 text-center 
+        text-sm font-semibold text-white px-2 
+        truncate max-w-[90%] hover:text-[#ED2809]
+        transition-all"
+      >
         {game.name}
       </p>
     </div>
