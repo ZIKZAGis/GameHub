@@ -1,14 +1,13 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import ProfileContent from "./components/ProfileContent";
+import { NextResponse } from "next/server";
 
-export default async function ProfilePage() {
+export async function GET() {
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {
-    redirect("/login?callbackUrl=/profile");
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const user = await prisma.user.findUnique({
@@ -19,9 +18,5 @@ export default async function ProfilePage() {
     },
   });
 
-  if (!user) {
-    redirect("/login");
-  }
-
-  return <ProfileContent initialUser={user} />;
+  return NextResponse.json(user);
 }
