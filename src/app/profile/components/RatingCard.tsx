@@ -7,7 +7,12 @@ import { useRouter } from "next/navigation";
 import RatingStars from "@/components/RatingStars/RatingStars";
 import defaultGameImage from "@/app/assets/images/default-game-image.jpg";
 
-export default function RatingCard({ rating }: { rating: Rating }) {
+type RatingCardProps = {
+  rating: Rating;
+  onRemove: (gameId: string) => void;
+};
+
+export default function RatingCard({ rating, onRemove }: RatingCardProps) {
   const { game } = useGame(Number(rating.gameId));
   const router = useRouter();
 
@@ -15,6 +20,10 @@ export default function RatingCard({ rating }: { rating: Rating }) {
 
   const handleCardClick = () => {
     router.push(`/game/${rating.gameId}`);
+  };
+
+  const handleRemove = async () => {
+    onRemove(rating.gameId);
   };
 
   return (
@@ -37,7 +46,9 @@ export default function RatingCard({ rating }: { rating: Rating }) {
       >
         <RatingStars
           gameId={rating.gameId}
-          removeClassName="top-1 right-1"
+          showRemove={true}
+          removeClassName="top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+          onRemove={handleRemove}
         />
       </div>
 

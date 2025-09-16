@@ -5,12 +5,19 @@ import { useFavorites } from "@/hooks/useFavorites";
 import Image from "next/image";
 import defaultGameImage from "@/app/assets/images/default-game-image.jpg";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function FavoriteCard({ gameId }: { gameId: number }) {
+interface FavoriteCardProps {
+  gameId: number;
+  onRemove?: (gameId: number) => void;
+}
+
+export default function FavoriteCard({ gameId, onRemove }: FavoriteCardProps) {
   const { game } = useGame(gameId);
   const { removeFavorite } = useFavorites();
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   if (!game) return null;
 
@@ -18,6 +25,7 @@ export default function FavoriteCard({ gameId }: { gameId: number }) {
     try {
       setLoading(true);
       await removeFavorite(String(gameId));
+      if (onRemove) onRemove(gameId);
     } catch (error) {
       console.error("Failed to remove favorite", error);
     } finally {
@@ -25,11 +33,16 @@ export default function FavoriteCard({ gameId }: { gameId: number }) {
     }
   }
 
+  const handleCardClick = () => {
+    router.push(`/game/${game.id}`);
+  };
+
   return (
     <motion.div
       whileHover={{ backgroundColor: "rgb(31, 41, 55)" }}
       transition={{ duration: 0.2 }}
       className="group min-w-[200px] md:min-w-0 bg-gray-900 rounded-lg p-2 flex-shrink-0 hover:shadow-xl transition cursor-pointer"
+      onClick={handleCardClick}
     >
       <div className="relative w-full aspect-video overflow-hidden rounded-md">
         <Image

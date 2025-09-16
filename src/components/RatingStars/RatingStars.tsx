@@ -32,13 +32,17 @@ export default function RatingStars({
     addOrUpdateRating(score);
   };
 
-  const handleRemove = () => {
+  const handleRemove = async () => {
+  try {
+    await deleteRating();
+
     if (onRemove) {
       onRemove();
-    } else {
-      deleteRating();
     }
-  };
+  } catch (error) {
+    console.error("Failed to remove rating:", error);
+  }
+};
 
   if (!session) {
     return <p className="text-sm text-gray-500">Login to rate</p>;
@@ -52,7 +56,7 @@ export default function RatingStars({
             key={star}
               className={clsx(
                 "cursor-pointer transition",
-                "h-[clamp(16px,2vw,28px)] w-[clamp(16px,2vw,28px)]", // динамический размер
+                "h-[clamp(16px,2vw,28px)] w-[clamp(16px,2vw,28px)]",
                 star <= (hovered || myRating?.score || 0)
                   ? "fill-[#ff5338] text-[#ff5338]"
                   : "text-gray-400"
